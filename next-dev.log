@@ -1,0 +1,66 @@
+nohup: ignorando entrada
+
+> weather-api@0.1.0 dev
+> next dev
+
+   ▲ Next.js 16.0.0 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.18.13:3000
+
+ ✓ Starting...
+
+thread 'tokio-runtime-worker' (6953) panicked at /build/turbopack/crates/turbo-tasks-backend/src/backend/operation/aggregation_update.rs:1420:17:
+inner_of_uppers_lost_follower is not able to remove follower TaskId 17 (ProjectContainer::entrypoints) from TaskId 16 (EntrypointsOperation::new) as they don't exist as upper or follower edges
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+ ✓ Ready in 61.8s
+
+-----
+[1m[31mFATAL[39m[0m: An unexpected Turbopack error occurred. A panic log has been written to /tmp/next-panic-e0c73e8cee53dafb92e11f7a28a1468e.log.
+
+To help make Turbopack better, report this error by ]8;;https://github.com/vercel/next.js/discussions/new?category=turbopack-error-report&title=Turbopack%20Error%3A%20inner_of_uppers_lost_follower%20is%20not%20able%20to%20remove%20follower%20TaskId%2017%20%28ProjectContainer%3A%3Aentrypoints%29%20from%20TaskId%2016%20%28EntrypointsOperation%3A%3Anew%29%20as%20they%20don%27t%20exist%20as%20upper%20or%20follower%20edges&body=Turbopack%20version%3A%20%609b25f18e%60%0ANext.js%20version%3A%20%600.0.0%60%0A%0AError%20message%3A%0A%60%60%60%0Ainner_of_uppers_lost_follower%20is%20not%20able%20to%20remove%20follower%20TaskId%2017%20%28ProjectContainer%3A%3Aentrypoints%29%20from%20TaskId%2016%20%28EntrypointsOperation%3A%3Anew%29%20as%20they%20don%27t%20exist%20as%20upper%20or%20follower%20edges%0A%0ADebug%20info%3A%0A-%20Execution%20of%20get_written_endpoint_with_issues_operation%20failed%0A-%20Execution%20of%20endpoint_write_to_disk_operation%20failed%0A-%20Execution%20of%20pick_endpoint%20failed%0A-%20Execution%20of%20entrypoints_without_collectibles_operation%20failed%0A-%20inner_of_uppers_lost_follower%20is%20not%20able%20to%20remove%20follower%20TaskId%2017%20%28ProjectContainer%3A%3Aentrypoints%29%20from%20TaskId%2016%20%28EntrypointsOperation%3A%3Anew%29%20as%20they%20don%27t%20exist%20as%20upper%20or%20follower%20edges%0A%60%60%60&labels=Turbopack,Turbopack%20Panic%20Backtrace\clicking here.]8;;\
+-----
+
+ ⨯ Error [TurbopackInternalError]: inner_of_uppers_lost_follower is not able to remove follower TaskId 17 (ProjectContainer::entrypoints) from TaskId 16 (EntrypointsOperation::new) as they don't exist as upper or follower edges
+
+Debug info:
+- Execution of get_written_endpoint_with_issues_operation failed
+- Execution of endpoint_write_to_disk_operation failed
+- Execution of pick_endpoint failed
+- Execution of entrypoints_without_collectibles_operation failed
+- inner_of_uppers_lost_follower is not able to remove follower TaskId 17 (ProjectContainer::entrypoints) from TaskId 16 (EntrypointsOperation::new) as they don't exist as upper or follower edges
+    at <unknown> (TurbopackInternalError: inner_of_uppers_lost_follower is not able to remove follower TaskId 17 (ProjectContainer::entrypoints) from TaskId 16 (EntrypointsOperation::new) as they don't exist as upper or follower edges) {
+  location: '/build/turbopack/crates/turbo-tasks-backend/src/backend/operation/aggregation_update.rs:1420:17'
+}
+Error [TurbopackInternalError]: inner_of_uppers_lost_follower is not able to remove follower TaskId 17 (ProjectContainer::entrypoints) from TaskId 16 (EntrypointsOperation::new) as they don't exist as upper or follower edges
+
+Debug info:
+- Execution of get_written_endpoint_with_issues_operation failed
+- Execution of endpoint_write_to_disk_operation failed
+- Execution of pick_endpoint failed
+- Execution of entrypoints_without_collectibles_operation failed
+- inner_of_uppers_lost_follower is not able to remove follower TaskId 17 (ProjectContainer::entrypoints) from TaskId 16 (EntrypointsOperation::new) as they don't exist as upper or follower edges
+    at <unknown> (TurbopackInternalError: inner_of_uppers_lost_follower is not able to remove follower TaskId 17 (ProjectContainer::entrypoints) from TaskId 16 (EntrypointsOperation::new) as they don't exist as upper or follower edges) {
+  location: '/build/turbopack/crates/turbo-tasks-backend/src/backend/operation/aggregation_update.rs:1420:17'
+}
+ ⨯ Error [TurbopackInternalError]: inner_of_uppers_lost_follower is not able to remove follower TaskId 17 (ProjectContainer::entrypoints) from TaskId 16 (EntrypointsOperation::new) as they don't exist as upper or follower edges
+
+Debug info:
+- Execution of get_written_endpoint_with_issues_operation failed
+- Execution of endpoint_write_to_disk_operation failed
+- Execution of pick_endpoint failed
+- Execution of entrypoints_without_collectibles_operation failed
+- inner_of_uppers_lost_follower is not able to remove follower TaskId 17 (ProjectContainer::entrypoints) from TaskId 16 (EntrypointsOperation::new) as they don't exist as upper or follower edges
+    at <unknown> (TurbopackInternalError: inner_of_uppers_lost_follower is not able to remove follower TaskId 17 (ProjectContainer::entrypoints) from TaskId 16 (EntrypointsOperation::new) as they don't exist as upper or follower edges) {
+  location: '/build/turbopack/crates/turbo-tasks-backend/src/backend/operation/aggregation_update.rs:1420:17'
+}
+Error [TurbopackInternalError]: inner_of_uppers_lost_follower is not able to remove follower TaskId 17 (ProjectContainer::entrypoints) from TaskId 16 (EntrypointsOperation::new) as they don't exist as upper or follower edges
+
+Debug info:
+- Execution of get_written_endpoint_with_issues_operation failed
+- Execution of endpoint_write_to_disk_operation failed
+- Execution of pick_endpoint failed
+- Execution of entrypoints_without_collectibles_operation failed
+- inner_of_uppers_lost_follower is not able to remove follower TaskId 17 (ProjectContainer::entrypoints) from TaskId 16 (EntrypointsOperation::new) as they don't exist as upper or follower edges
+    at <unknown> (TurbopackInternalError: inner_of_uppers_lost_follower is not able to remove follower TaskId 17 (ProjectContainer::entrypoints) from TaskId 16 (EntrypointsOperation::new) as they don't exist as upper or follower edges) {
+  location: '/build/turbopack/crates/turbo-tasks-backend/src/backend/operation/aggregation_update.rs:1420:17'
+}

@@ -1,0 +1,23 @@
+{
+  "cached": {
+    "temperature": 16,
+    "dewPoint": 8,
+    "humidity": 59,
+    "metar": "2025102208 - METAR SBRP 220800Z 12011KT CAVOK 16/08 Q1022=",
+    "updatedAt": "05:09",
+    "raw": "METAR SBRP 220800Z 12011KT CAVOK 16/08 Q1022=",
+    "station": "SBRP",
+    "obsTime": "220800Z",
+    "wind": {
+      "dir": "120",
+      "speedKt": 11,
+      "gustKt": null
+    },
+    "visibility": ">=10km",
+    "clouds": [],
+    "weather": null,
+    "qnh_hpa": 1022
+  },
+  "cachedMetar": "2025102208 - METAR SBRP 220800Z 12011KT CAVOK 16/08 Q1022=",
+  "cachedAt": 1761121880091
+}
