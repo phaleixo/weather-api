@@ -68,10 +68,46 @@ function parseMetar(metarStr) {
     ? { alt_inhg: aMatch[1] }
     : null;
 
+  // Ajusta o horário do METAR (+3h) e também expõe uma versão local formatada
+  let obsTimeLocal = null;
+  const obsTimeRaw = timeMatch ? timeMatch[1] : null;
+  if (obsTimeRaw) {
+    const m = obsTimeRaw.match(/(\d{2})(\d{2})(\d{2})Z/);
+    if (m) {
+      try {
+        const day = parseInt(m[1], 10);
+        const hour = parseInt(m[2], 10);
+        const minute = parseInt(m[3], 10);
+        const nowUtc = new Date();
+        // Monta uma data UTC usando o ano e mês atuais (METAR fornece apenas dia/hhmmZ)
+        const obsDateUtc = new Date(
+          Date.UTC(
+            nowUtc.getUTCFullYear(),
+            nowUtc.getUTCMonth(),
+            day,
+            hour,
+            minute
+          )
+        );
+        // Adiciona 3 horas
+        obsDateUtc.setUTCHours(obsDateUtc.getUTCHours() + 3);
+        // Formata horário local legível (HH:MM)
+        obsTimeLocal = obsDateUtc.toLocaleTimeString("pt-BR", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      } catch {
+        // falha na conversão, manter obsTimeLocal null
+        obsTimeLocal = null;
+      }
+    }
+  }
+
   return {
     raw: metar,
     station: stationMatch ? stationMatch[1] : null,
-    obsTime: timeMatch ? timeMatch[1] : null,
+    obsTime: obsTimeRaw,
+    obsTimeLocal,
     wind,
     visibility,
     clouds,
@@ -192,12 +228,33 @@ async function saveCacheToFile() {
   }
 }
 
-// API handler para Next.js (Server)
+// API handler principal com CORS habilitado
+export default async function handler(req, res) {
+  // Libera CORS para GitHub Pages e outros domínios
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  // Adaptamos o request/res para usar a lógica já existente do GET
+  const fakeRequest = { url: req.url };
+  const response = await GET(fakeRequest);
+
+  // Extrai corpo e status do Response retornado pelo GET
+  const text = await response.text();
+  res.status(response.status);
+  response.headers.forEach((value, key) => res.setHeader(key, value));
+  res.send(text);
+}
+
+// Mantém a função GET original do Next.js (usada internamente acima)
 export async function GET(request) {
-  // Função local para obter a data no formato exigido pela Redemet
   function getCurrentDate() {
     const now = new Date();
-    now.setHours(now.getHours() + 3); // Ajuste de fuso, se necessário
+    now.setHours(now.getHours() + 3);
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, "0");
     const day = String(now.getDate()).padStart(2, "0");
@@ -211,15 +268,12 @@ export async function GET(request) {
       "&data_fim=" +
       getCurrentDate();
 
-    // Faz a requisição direto do servidor (não precisa de proxy CORS)
-    // Se tivermos cache e ainda estiver dentro do TTL, retornamos cache
     const url = request ? new URL(request.url) : null;
     const forceParam = url ? url.searchParams.get("force") : null;
     const force = forceParam === "true" || forceParam === "1";
 
     const nowTs = Date.now();
     if (!force && cached && nowTs - cachedAt < CACHE_MIN_TTL_MS) {
-      // Garantir que o cache contém campos parseados (normalize on read)
       try {
         if (cached.metar) {
           const idx = String(cached.metar).indexOf("METAR");
@@ -252,7 +306,6 @@ export async function GET(request) {
               cached.dewPoint
             );
           }
-          // Persistir a normalização
           await saveCacheToFile();
         }
       } catch (err) {
@@ -272,17 +325,12 @@ export async function GET(request) {
           error: "Falha ao buscar dados",
           status: response.status,
         }),
-        {
-          status: 502,
-          headers: { "Content-Type": "application/json" },
-        }
+        { status: 502, headers: { "Content-Type": "application/json" } }
       );
     }
 
     const data = await response.text();
-
     const metar = data.split("\n")[0] || "";
-
     const parsed = parseMetar(metar);
 
     if (!parsed || !parsed.temperatureC) {
@@ -309,21 +357,19 @@ export async function GET(request) {
     });
 
     const result = {
-      // dados brutos e parseados
       metar,
       ...parsed,
+      obsTimeLocal: parsed.obsTimeLocal || null,
       temperature,
       dewPoint,
       humidity,
       updatedAt: timeString,
     };
 
-    // Se o METAR mudou em relação ao cache, atualizamos o cache
     if (metar && metar !== cachedMetar) {
       cached = result;
       cachedMetar = metar;
       cachedAt = Date.now();
-      // Persistir no arquivo
       await saveCacheToFile();
       return new Response(JSON.stringify({ cached: false, ...result }), {
         status: 200,
@@ -331,7 +377,6 @@ export async function GET(request) {
       });
     }
 
-    // METAR igual ao cache: atualizamos apenas o timestamp e retornamos cache
     if (cached) {
       cachedAt = Date.now();
       await saveCacheToFile();
@@ -341,7 +386,6 @@ export async function GET(request) {
       });
     }
 
-    // Não havia cache anterior, mas agora temos dados
     cached = result;
     cachedMetar = metar;
     cachedAt = Date.now();
@@ -361,5 +405,3 @@ export async function GET(request) {
     );
   }
 }
-
-// Nota: a lógica do cliente (manipulação do DOM e setInterval) deve ficar no front-end.
