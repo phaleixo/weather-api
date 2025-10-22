@@ -167,7 +167,7 @@ export default function HomePage() {
               <div>
                 <div className="text-sm text-gray-500">Estação</div>
                 <div className="text-lg font-semibold text-gray-800 dark:text-white">{data?.station ?? 'SBRP'}</div>
-                <div className="text-xs text-gray-400 mt-1">Observação: {data?.obsTimeLocal ?? data?.obsTime ?? '--'}</div>
+                
               </div>
               <div className="text-right text-sm text-gray-400">Atualizado: {data?.updatedAt ?? '--:--'}</div>
             </div>

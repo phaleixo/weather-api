@@ -1,32 +1,26 @@
 {
   "cached": {
-    "metar": "2025102215 - METAR SBRP 221500Z 11012KT 9999 SCT045 26/06 Q1024=",
-    "raw": "2025102215 - METAR SBRP 221500Z 11012KT 9999 SCT045 26/06 Q1024=",
+    "metar": "2025102216 - METAR SBRP 221600Z 07010KT 030V100 CAVOK 27/06 Q1023=",
+    "raw": "2025102216 - METAR SBRP 221600Z 07010KT 030V100 CAVOK 27/06 Q1023=",
     "station": "SBRP",
-    "obsTime": "221500Z",
-    "obsTimeLocal": "15:00",
+    "obsTime": "221600Z",
+    "obsTimeLocal": "16:00",
     "wind": {
-      "dir": "110",
-      "speedKt": 12,
+      "dir": "070",
+      "speedKt": 10,
       "gustKt": null
     },
     "visibility": ">=10km",
-    "clouds": [
-      {
-        "type": "SCT",
-        "heightFt": 4500,
-        "modifier": null
-      }
-    ],
+    "clouds": [],
     "weather": null,
-    "temperatureC": 26,
+    "temperatureC": 27,
     "dewPointC": 6,
-    "qnh_hpa": 1024,
-    "temperature": 26,
+    "qnh_hpa": 1023,
+    "temperature": 27,
     "dewPoint": 6,
-    "humidity": 28,
-    "updatedAt": "12:45"
+    "humidity": 26,
+    "updatedAt": "15:28"
   },
-  "cachedMetar": "2025102215 - METAR SBRP 221500Z 11012KT 9999 SCT045 26/06 Q1024=",
-  "cachedAt": 1761150539511
+  "cachedMetar": "2025102216 - METAR SBRP 221600Z 07010KT 030V100 CAVOK 27/06 Q1023=",
+  "cachedAt": 1761157717582
 }

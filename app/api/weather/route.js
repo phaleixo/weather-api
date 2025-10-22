@@ -2,7 +2,10 @@ import fs from "fs";
 import fsp from "fs/promises";
 import path from "path";
 
-// Funções utilitárias em escopo de módulo para permitir normalizar cache ao iniciar
+// ----------------------
+// Funções utilitárias
+// ----------------------
+
 function calculateHumidity(temp, dewPoint) {
   if (typeof temp !== "number" || typeof dewPoint !== "number") return null;
   const humidity =
@@ -68,7 +71,7 @@ function parseMetar(metarStr) {
     ? { alt_inhg: aMatch[1] }
     : null;
 
-  // Ajusta o horário do METAR (+3h) e também expõe uma versão local formatada
+  // Ajusta horário local (+3h)
   let obsTimeLocal = null;
   const obsTimeRaw = timeMatch ? timeMatch[1] : null;
   if (obsTimeRaw) {
@@ -79,7 +82,6 @@ function parseMetar(metarStr) {
         const hour = parseInt(m[2], 10);
         const minute = parseInt(m[3], 10);
         const nowUtc = new Date();
-        // Monta uma data UTC usando o ano e mês atuais (METAR fornece apenas dia/hhmmZ)
         const obsDateUtc = new Date(
           Date.UTC(
             nowUtc.getUTCFullYear(),
@@ -89,15 +91,12 @@ function parseMetar(metarStr) {
             minute
           )
         );
-        // Adiciona 3 horas
         obsDateUtc.setUTCHours(obsDateUtc.getUTCHours() + 3);
-        // Formata horário local legível (HH:MM)
         obsTimeLocal = obsDateUtc.toLocaleTimeString("pt-BR", {
           hour: "2-digit",
           minute: "2-digit",
         });
       } catch {
-        // falha na conversão, manter obsTimeLocal null
         obsTimeLocal = null;
       }
     }
@@ -118,17 +117,18 @@ function parseMetar(metarStr) {
   };
 }
 
-// Cache em memória (module scope) - válido enquanto o processo do Node estiver vivo
+// ----------------------
+// Controle de cache
+// ----------------------
+
 let cached = null;
 let cachedMetar = null;
-let cachedAt = 0; // timestamp ms
-const CACHE_MIN_TTL_MS = 30 * 60 * 1000; // 30 minutos por padrão
+let cachedAt = 0;
+const CACHE_MIN_TTL_MS = 30 * 60 * 1000;
 
-// Caminho do arquivo de cache (persistência)
 const CACHE_DIR = path.join(process.cwd(), "data");
 const CACHE_FILE_PATH = path.join(CACHE_DIR, "weather-cache.json");
 
-// Garante que o diretório exista
 try {
   if (!fs.existsSync(CACHE_DIR)) {
     fs.mkdirSync(CACHE_DIR, { recursive: true });
@@ -137,7 +137,6 @@ try {
   console.error("Erro ao garantir diretório de cache:", err);
 }
 
-// Tenta carregar cache do arquivo na inicialização (sincrono para garantir disponibilidade)
 try {
   if (fs.existsSync(CACHE_FILE_PATH)) {
     const raw = fs.readFileSync(CACHE_FILE_PATH, "utf8");
@@ -145,57 +144,6 @@ try {
     cached = parsed.cached || null;
     cachedMetar = parsed.cachedMetar || null;
     cachedAt = parsed.cachedAt || 0;
-
-    // Normaliza cache: se existir metar no cache mas faltar campos parseados, preenche
-    try {
-      if (cached && cached.metar) {
-        // extrai substring a partir de 'METAR' caso o campo tenha prefixos (ex: timestamps)
-        const idx = String(cached.metar).indexOf("METAR");
-        const rawMetar =
-          idx >= 0 ? String(cached.metar).slice(idx) : String(cached.metar);
-        const parsedFields = parseMetar(rawMetar);
-
-        // Mescla campos se estiverem faltando
-        cached.raw = cached.raw || parsedFields.raw || rawMetar;
-        cached.station = cached.station || parsedFields.station;
-        cached.obsTime = cached.obsTime || parsedFields.obsTime;
-        cached.wind = cached.wind || parsedFields.wind;
-        cached.visibility = cached.visibility || parsedFields.visibility;
-        cached.clouds = cached.clouds || parsedFields.clouds;
-        cached.weather = cached.weather || parsedFields.weather;
-        // temperatura/dewpoint
-        if (cached.temperature == null && parsedFields.temperatureC != null)
-          cached.temperature = parsedFields.temperatureC;
-        if (cached.dewPoint == null && parsedFields.dewPointC != null)
-          cached.dewPoint = parsedFields.dewPointC;
-        // pressão
-        if (parsedFields.qnh_hpa)
-          cached.qnh_hpa = cached.qnh_hpa || parsedFields.qnh_hpa;
-        if (parsedFields.alt_inhg)
-          cached.alt_inhg = cached.alt_inhg || parsedFields.alt_inhg;
-        // calcula umidade se possível
-        if (
-          cached.humidity == null &&
-          typeof cached.temperature === "number" &&
-          typeof cached.dewPoint === "number"
-        ) {
-          cached.humidity = calculateHumidity(
-            cached.temperature,
-            cached.dewPoint
-          );
-        }
-
-        // atualiza cachedMetar caso esteja vazio
-        if (!cachedMetar) cachedMetar = cached.metar;
-
-        // salva imediatamente o cache normalizado (fire and forget)
-        saveCacheToFile().catch((err) =>
-          console.error("Erro salvando cache normalizado:", err)
-        );
-      }
-    } catch (err) {
-      console.error("Erro ao normalizar cache de arquivo:", err);
-    }
   }
 } catch (err) {
   console.error("Falha ao carregar cache do arquivo:", err);
@@ -203,70 +151,103 @@ try {
 
 async function saveCacheToFile() {
   try {
-    const payload = {
-      cached,
-      cachedMetar,
-      cachedAt,
-    };
-    // Em ambientes serverless (ex: Vercel) a escrita em disco pode não ser persistente.
-    // Detectamos Vercel pela variável de ambiente VERCEL=1 e pulamos a escrita.
-    if (process.env.VERCEL === "1") {
-      // apenas log para debug
-      console.debug(
-        "Ambiente Vercel detectado; pulando gravação de cache em disco."
-      );
-      return;
-    }
-
+    const payload = { cached, cachedMetar, cachedAt };
+    if (process.env.VERCEL === "1") return; // não persiste em ambiente serverless
     await fsp.writeFile(
       CACHE_FILE_PATH,
       JSON.stringify(payload, null, 2),
       "utf8"
     );
   } catch (err) {
-    console.error("Falha ao salvar cache no arquivo:", err);
+    console.error("Falha ao salvar cache:", err);
   }
 }
 
-// API handler principal com CORS habilitado
+// Cabeçalhos CORS reutilizáveis
+function corsHeaders() {
+  return {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+  };
+}
+
+// ----------------------
+// Handler principal com CORS funcional no Vercel
+// ----------------------
+
 export default async function handler(req, res) {
-  // Libera CORS para GitHub Pages e outros domínios
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  // Caso esteja rodando localmente (Node)
+  if (res && typeof res.setHeader === "function") {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
+    if (req.method === "OPTIONS") return res.status(200).end();
+
+    const fakeRequest = { url: req.url };
+    const response = await GET(fakeRequest);
+    const text = await response.text();
+    res.status(response.status);
+    response.headers.forEach((value, key) => res.setHeader(key, value));
+    return res.send(text);
   }
 
-  // Adaptamos o request/res para usar a lógica já existente do GET
-  const fakeRequest = { url: req.url };
-  const response = await GET(fakeRequest);
+  // Caso esteja rodando na Vercel (Edge / Serverless)
+  if (req.method === "OPTIONS") {
+    return new Response(null, {
+      status: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+      },
+    });
+  }
 
-  // Extrai corpo e status do Response retornado pelo GET
+  const response = await GET(req);
   const text = await response.text();
-  res.status(response.status);
-  response.headers.forEach((value, key) => res.setHeader(key, value));
-  res.send(text);
+
+  return new Response(text, {
+    status: response.status,
+    headers: {
+      ...Object.fromEntries(response.headers),
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    },
+  });
 }
 
-// Mantém a função GET original do Next.js (usada internamente acima)
+// Exporta OPTIONS para o App Router (preflight)
+export async function OPTIONS() {
+  return new Response(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    },
+  });
+}
+
+// ----------------------
+// Lógica principal (GET)
+// ----------------------
+
 export async function GET(request) {
   function getCurrentDate() {
     const now = new Date();
     now.setHours(now.getHours() + 3);
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    return `${year}${month}${day}`;
+    return `${now.getFullYear()}${String(now.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}${String(now.getDate()).padStart(2, "0")}`;
   }
 
   try {
-    const baseURL =
-      "http://redemet.decea.gov.br/api/consulta_automatica/index.php?local=sbrp&msg=metar&data_ini=" +
-      getCurrentDate() +
-      "&data_fim=" +
-      getCurrentDate();
+    const baseURL = `http://redemet.decea.gov.br/api/consulta_automatica/index.php?local=sbrp&msg=metar&data_ini=${getCurrentDate()}&data_fim=${getCurrentDate()}`;
 
     const url = request ? new URL(request.url) : null;
     const forceParam = url ? url.searchParams.get("force") : null;
@@ -274,58 +255,20 @@ export async function GET(request) {
 
     const nowTs = Date.now();
     if (!force && cached && nowTs - cachedAt < CACHE_MIN_TTL_MS) {
-      try {
-        if (cached.metar) {
-          const idx = String(cached.metar).indexOf("METAR");
-          const rawMetar =
-            idx >= 0 ? String(cached.metar).slice(idx) : String(cached.metar);
-          const parsedFields = parseMetar(rawMetar);
-
-          cached.raw = cached.raw || parsedFields.raw || rawMetar;
-          cached.station = cached.station || parsedFields.station;
-          cached.obsTime = cached.obsTime || parsedFields.obsTime;
-          cached.wind = cached.wind || parsedFields.wind;
-          cached.visibility = cached.visibility || parsedFields.visibility;
-          cached.clouds = cached.clouds || parsedFields.clouds;
-          cached.weather = cached.weather || parsedFields.weather;
-          if (cached.temperature == null && parsedFields.temperatureC != null)
-            cached.temperature = parsedFields.temperatureC;
-          if (cached.dewPoint == null && parsedFields.dewPointC != null)
-            cached.dewPoint = parsedFields.dewPointC;
-          if (parsedFields.qnh_hpa)
-            cached.qnh_hpa = cached.qnh_hpa || parsedFields.qnh_hpa;
-          if (parsedFields.alt_inhg)
-            cached.alt_inhg = cached.alt_inhg || parsedFields.alt_inhg;
-          if (
-            cached.humidity == null &&
-            typeof cached.temperature === "number" &&
-            typeof cached.dewPoint === "number"
-          ) {
-            cached.humidity = calculateHumidity(
-              cached.temperature,
-              cached.dewPoint
-            );
-          }
-          await saveCacheToFile();
-        }
-      } catch (err) {
-        console.error("Erro ao normalizar cache antes de retornar:", err);
-      }
-
       return new Response(JSON.stringify({ cached: true, ...cached }), {
         status: 200,
-        headers: { "Content-Type": "application/json" },
+        headers: corsHeaders(),
       });
     }
 
-    const response = await fetch(baseURL, { next: { revalidate: 60 } });
+    const response = await fetch(baseURL);
     if (!response.ok) {
       return new Response(
         JSON.stringify({
           error: "Falha ao buscar dados",
           status: response.status,
         }),
-        { status: 502, headers: { "Content-Type": "application/json" } }
+        { status: 502, headers: corsHeaders() }
       );
     }
 
@@ -335,11 +278,8 @@ export async function GET(request) {
 
     if (!parsed || !parsed.temperatureC) {
       return new Response(
-        JSON.stringify({
-          error: "METAR não encontrado ou formato inesperado",
-          metar,
-        }),
-        { status: 422, headers: { "Content-Type": "application/json" } }
+        JSON.stringify({ error: "METAR inválido ou ausente", metar }),
+        { status: 422, headers: corsHeaders() }
       );
     }
 
@@ -359,49 +299,26 @@ export async function GET(request) {
     const result = {
       metar,
       ...parsed,
-      obsTimeLocal: parsed.obsTimeLocal || null,
       temperature,
       dewPoint,
       humidity,
       updatedAt: timeString,
     };
 
-    if (metar && metar !== cachedMetar) {
-      cached = result;
-      cachedMetar = metar;
-      cachedAt = Date.now();
-      await saveCacheToFile();
-      return new Response(JSON.stringify({ cached: false, ...result }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    if (cached) {
-      cachedAt = Date.now();
-      await saveCacheToFile();
-      return new Response(JSON.stringify({ cached: true, ...cached }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
     cached = result;
     cachedMetar = metar;
     cachedAt = Date.now();
     await saveCacheToFile();
+
     return new Response(JSON.stringify({ cached: false, ...result }), {
       status: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: corsHeaders(),
     });
   } catch (error) {
     console.error("Erro na rota /api/weather:", error);
     return new Response(
       JSON.stringify({ error: "Erro interno", message: String(error) }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
+      { status: 500, headers: corsHeaders() }
     );
   }
 }
