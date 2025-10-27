@@ -218,12 +218,12 @@ export default function HomePage() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
                   <div className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">1) Curl (linha de comando)</div>
-                  <pre className="bg-gray-100 dark:bg-gray-900 p-2 rounded text-[12px] overflow-x-auto"><code>{`curl -s 'https://weather-b9s4emx5i-phaleixos-projects.vercel.app/api/weather' | jq .`}</code></pre>
+                  <pre className="bg-gray-100 dark:bg-gray-900 p-2 rounded text-[12px] overflow-x-auto"><code>{`curl -s 'https://weather-api-dun-mu.vercel.app/' | jq .`}</code></pre>
                 </div>
 
                 <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
                   <div className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">2) Fetch (JavaScript)</div>
-                  <pre className="bg-gray-100 dark:bg-gray-900 p-2 rounded text-[12px] overflow-x-auto"><code>{`fetch('https://weather-b9s4emx5i-phaleixos-projects.vercel.app/api/weather')
+                  <pre className="bg-gray-100 dark:bg-gray-900 p-2 rounded text-[12px] overflow-x-auto"><code>{`fetch('https://weather-api-dun-mu.vercel.app/')
   .then(r => r.json())
   .then(data => console.log(data))
   .catch(err => console.error(err));`}</code></pre>
@@ -232,7 +232,7 @@ export default function HomePage() {
                 <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
                   <div className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">3) Incluir no HTML (exemplo mínimo)</div>
                   <pre className="bg-gray-100 dark:bg-gray-900 p-2 rounded text-[12px] overflow-x-auto"><code>{`<script>
-fetch('https://weather-b9s4emx5i-phaleixos-projects.vercel.app/api/weather')
+fetch('https://weather-api-dun-mu.vercel.app/')
   .then(r => r.json())
   .then(data => {
     document.getElementById('temperature').textContent = data.temperature + '°C';
