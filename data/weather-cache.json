@@ -30,11 +30,11 @@
     "temperature": 26,
     "dewPoint": 15,
     "humidity": 51,
-    "updatedAt": "16:28",
+    "updatedAt": "16:31",
     "iconName": "cloud",
     "iconPath": "/weather-icons/cloud.svg",
     "iconUrl": "http://localhost:3000/weather-icons/cloud.svg"
   },
   "cachedMetar": "2025102719 - METAR SBRP 271900Z 11006KT 9999 SCT035 OVC090 26/15 Q1015=",
-  "cachedAt": 1761593299060
+  "cachedAt": 1761593471693
 }
