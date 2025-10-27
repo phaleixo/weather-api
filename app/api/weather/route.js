@@ -124,7 +124,7 @@ function parseMetar(metarStr) {
 let cached = null;
 let cachedMetar = null;
 let cachedAt = 0;
-const CACHE_MIN_TTL_MS = 30 * 60 * 1000;
+const CACHE_MIN_TTL_MS = 2 * 60 * 1000;
 
 const CACHE_DIR = path.join(process.cwd(), "data");
 const CACHE_FILE_PATH = path.join(CACHE_DIR, "weather-cache.json");
