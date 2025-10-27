@@ -174,6 +174,54 @@ function corsHeaders() {
 }
 
 // ----------------------
+// Mapeamento de ícones de tempo
+// ----------------------
+function mapWeatherToIcon(parsed) {
+  if (!parsed) return "sun";
+  const weatherArr = parsed.weather || [];
+  const weatherStr = Array.isArray(weatherArr)
+    ? weatherArr.join(" ").toUpperCase()
+    : String(weatherArr).toUpperCase();
+
+  // Prioriza fenômenos severos
+  if (/TS|SQ/.test(weatherStr)) return "thunder";
+  if (/SH|RA|DZ|GR|GS|PL/.test(weatherStr)) return "rain";
+  if (/SN|SG|SGS|S/.test(weatherStr)) return "snow";
+  if (/FG|BR/.test(weatherStr)) return "fog";
+
+  // Níveis de nuvens indicam céu encoberto/ nublado
+  const clouds = parsed.clouds || [];
+  if (Array.isArray(clouds)) {
+    if (clouds.some((c) => c.type === "OVC")) return "cloud";
+    if (clouds.some((c) => c.type === "BKN")) return "cloud";
+    if (clouds.some((c) => c.type === "SCT")) return "cloud";
+  }
+
+  // Padrão: sol
+  return "sun";
+}
+
+function buildIconPaths(iconName, request) {
+  const iconPath = `/weather-icons/${iconName}.svg`;
+  let iconUrl = iconPath;
+  // Prioriza BASE_URL (útil em produção/proxy), depois origem da request, depois caminho relativo
+  if (process.env.BASE_URL) {
+    iconUrl = `${process.env.BASE_URL.replace(/\/$/, "")}${iconPath}`;
+    return { iconName, iconPath, iconUrl };
+  }
+
+  try {
+    if (request && request.url) {
+      const u = new URL(request.url);
+      iconUrl = `${u.origin}${iconPath}`;
+    }
+  } catch {
+    // fallback para caminho relativo
+  }
+  return { iconName, iconPath, iconUrl };
+}
+
+// ----------------------
 // Handler principal com CORS funcional no Vercel
 // ----------------------
 
@@ -296,6 +344,24 @@ export async function GET(request) {
       minute: "2-digit",
     });
 
+    const iconNameComputed = mapWeatherToIcon(parsed);
+    // Determina se é dia ou noite no horário local do observador (+3h como elsewhere)
+    const nowLocal = new Date();
+    nowLocal.setHours(nowLocal.getHours() + 3);
+    const hourLocal = nowLocal.getHours();
+    const isDay = hourLocal >= 6 && hourLocal < 18;
+
+    // aplica variante dia/noite para ícone claro
+    let finalIconName = iconNameComputed;
+    if (iconNameComputed === "sun") {
+      finalIconName = isDay ? "sun" : "moon";
+    }
+
+    const { iconName, iconPath, iconUrl } = buildIconPaths(
+      finalIconName,
+      request
+    );
+
     const result = {
       metar,
       ...parsed,
@@ -303,6 +369,9 @@ export async function GET(request) {
       dewPoint,
       humidity,
       updatedAt: timeString,
+      iconName,
+      iconPath,
+      iconUrl,
     };
 
     cached = result;

@@ -1,26 +1,40 @@
 {
   "cached": {
-    "metar": "2025102216 - METAR SBRP 221600Z 07010KT 030V100 CAVOK 27/06 Q1023=",
-    "raw": "2025102216 - METAR SBRP 221600Z 07010KT 030V100 CAVOK 27/06 Q1023=",
-    "station": "SBRP",
-    "obsTime": "221600Z",
-    "obsTimeLocal": "16:00",
+    "metar": "2025102719 - METAR SBRP 271900Z 11006KT 9999 SCT035 OVC090 26/15 Q1015=",
+    "raw": "2025102719 - METAR SBRP 271900Z 11006KT 9999 SCT035 OVC090 26/15 Q1015=",
+    "station": null,
+    "obsTime": "271900Z",
+    "obsTimeLocal": "19:00",
     "wind": {
-      "dir": "070",
-      "speedKt": 10,
+      "dir": "110",
+      "speedKt": 6,
       "gustKt": null
     },
     "visibility": ">=10km",
-    "clouds": [],
+    "clouds": [
+      {
+        "type": "SCT",
+        "heightFt": 3500,
+        "modifier": null
+      },
+      {
+        "type": "OVC",
+        "heightFt": 9000,
+        "modifier": null
+      }
+    ],
     "weather": null,
-    "temperatureC": 27,
-    "dewPointC": 6,
-    "qnh_hpa": 1023,
-    "temperature": 27,
-    "dewPoint": 6,
-    "humidity": 26,
-    "updatedAt": "15:28"
+    "temperatureC": 26,
+    "dewPointC": 15,
+    "qnh_hpa": 1015,
+    "temperature": 26,
+    "dewPoint": 15,
+    "humidity": 51,
+    "updatedAt": "16:28",
+    "iconName": "cloud",
+    "iconPath": "/weather-icons/cloud.svg",
+    "iconUrl": "http://localhost:3000/weather-icons/cloud.svg"
   },
-  "cachedMetar": "2025102216 - METAR SBRP 221600Z 07010KT 030V100 CAVOK 27/06 Q1023=",
-  "cachedAt": 1761157717582
+  "cachedMetar": "2025102719 - METAR SBRP 271900Z 11006KT 9999 SCT035 OVC090 26/15 Q1015=",
+  "cachedAt": 1761593299060
 }

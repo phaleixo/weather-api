@@ -207,7 +207,7 @@ export default function HomePage() {
           <div className="max-w-3xl mx-auto text-sm text-gray-600 dark:text-gray-300">
             <div className="flex items-center justify-between">
               <div>
-                API criada por <a href="https://github.com/phaleixo" target="_blank" rel="noopener noreferrer" className="text-blue-600">phaleixo</a>
+                API criada por <a href="https://github.com/phaleixo" target="_blank" rel="noopener noreferrer" className="text-blue-600">phaleixo</a> sob licença GPL v3. codigo-fonte disponível no <a href="https://github.com/phaleixo/weather-api" target="_blank" rel="noopener noreferrer" className="text-blue-600">GitHub</a>.
               </div>
               <div className="text-xs text-gray-400">Fonte: REDMET</div>
             </div>
