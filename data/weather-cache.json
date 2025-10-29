@@ -1,40 +1,29 @@
 {
   "cached": {
-    "metar": "2025102719 - METAR SBRP 271900Z 11006KT 9999 SCT035 OVC090 26/15 Q1015=",
-    "raw": "2025102719 - METAR SBRP 271900Z 11006KT 9999 SCT035 OVC090 26/15 Q1015=",
+    "metar": "2025102923 - METAR SBRP 292300Z 26004KT CAVOK 26/19 Q1016=",
+    "raw": "2025102923 - METAR SBRP 292300Z 26004KT CAVOK 26/19 Q1016=",
     "station": null,
-    "obsTime": "271900Z",
-    "obsTimeLocal": "19:00",
+    "obsTime": "292300Z",
+    "obsTimeLocal": "23:00",
     "wind": {
-      "dir": "110",
-      "speedKt": 6,
+      "dir": "260",
+      "speedKt": 4,
       "gustKt": null
     },
     "visibility": ">=10km",
-    "clouds": [
-      {
-        "type": "SCT",
-        "heightFt": 3500,
-        "modifier": null
-      },
-      {
-        "type": "OVC",
-        "heightFt": 9000,
-        "modifier": null
-      }
-    ],
+    "clouds": [],
     "weather": null,
     "temperatureC": 26,
-    "dewPointC": 15,
-    "qnh_hpa": 1015,
+    "dewPointC": 19,
+    "qnh_hpa": 1016,
     "temperature": 26,
-    "dewPoint": 15,
-    "humidity": 51,
-    "updatedAt": "16:31",
-    "iconName": "cloud",
-    "iconPath": "/weather-icons/cloud.svg",
-    "iconUrl": "http://localhost:3000/weather-icons/cloud.svg"
+    "dewPoint": 19,
+    "humidity": 65,
+    "updatedAt": "20:23",
+    "iconName": "moon",
+    "iconPath": "/weather-icons/moon.svg",
+    "iconUrl": "http://localhost:3000/weather-icons/moon.svg"
   },
-  "cachedMetar": "2025102719 - METAR SBRP 271900Z 11006KT 9999 SCT035 OVC090 26/15 Q1015=",
-  "cachedAt": 1761593471693
+  "cachedMetar": "2025102923 - METAR SBRP 292300Z 26004KT CAVOK 26/19 Q1016=",
+  "cachedAt": 1761780201358
 }

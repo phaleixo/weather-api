@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
+import Image from "next/image";
 
 type WeatherData = {
   cached?: boolean;
@@ -20,74 +21,24 @@ type WeatherData = {
   temperature?: number | null;
   dewPoint?: number | null;
   humidity?: number | null;
+  iconUrl?: string | null;
   updatedAt?: string | null;
 };
-
-function pickIcon(data: WeatherData) {
-  const weatherStr = (data.weather || []).join(" ") || "";
-  const clouds = data.clouds || [];
-
-  if (/TS/.test(weatherStr)) return "thunder";
-  if (/(RA|DZ|SH)/.test(weatherStr)) return "rain";
-  if (/(SN|SG|GR)/.test(weatherStr)) return "snow";
-  if (/(FG|BR|HZ|FU)/.test(weatherStr)) return "fog";
-
-  const hasOVC = clouds.some((c) => c.type === "OVC" || c.type === "BKN");
-  const hasFew = clouds.some((c) => c.type === "FEW" || c.type === "SCT");
-  if (hasOVC) return "cloud";
-  if (hasFew) return "partly";
-
-  return "sun";
-}
-
-function Icon({ type }: { type: string }) {
-  switch (type) {
-    case "thunder":
-      return (
-        <svg className="w-20 h-20 sm:w-16 sm:h-16 text-yellow-400" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-          <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" />
-        </svg>
-      );
-    case "rain":
-      return (
-        <svg className="w-20 h-20 sm:w-16 sm:h-16 text-blue-500" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-          <path d="M3 13a4 4 0 014-4h1a6 6 0 1111 3h-1a4 4 0 01-4 4H7a4 4 0 01-4-3z" />
-          <path d="M8 19c0 .6-.4 1-1 1s-1-.4-1-1 .4-1 1-1 1 .4 1 1zm6 0c0 .6-.4 1-1 1s-1-.4-1-1 .4-1 1-1 1 .4 1 1z" />
-        </svg>
-      );
-    case "snow":
-      return (
-        <svg className="w-20 h-20 sm:w-16 sm:h-16 text-sky-200" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-          <path d="M12 2v20M2 12h20M4.2 4.2l15.6 15.6M19.8 4.2L4.2 19.8" stroke="currentColor" strokeWidth="1.2" />
-        </svg>
-      );
-    case "fog":
-      return (
-        <svg className="w-20 h-20 sm:w-16 sm:h-16 text-gray-400" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-          <path d="M3 12h18M3 16h18M3 8h18" stroke="currentColor" strokeWidth="1.5" />
-        </svg>
-      );
-    case "cloud":
-      return (
-        <svg className="w-20 h-20 sm:w-16 sm:h-16 text-gray-500" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-          <path d="M5 16a4 4 0 010-8 6 6 0 0111.9 1.1A4 4 0 0119 16H5z" />
-        </svg>
-      );
-    case "partly":
-      return (
-        <svg className="w-20 h-20 sm:w-16 sm:h-16 text-yellow-400" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-          <path d="M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" />
-          <path d="M6 14a6 6 0 0012 0 4 4 0 00-4-4H9a4 4 0 00-3 6z" />
-        </svg>
-      );
-    default:
-      return (
-        <svg className="w-20 h-20 sm:w-16 sm:h-16 text-yellow-400" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-          <path d="M12 4a8 8 0 100 16 8 8 0 000-16z" />
-        </svg>
-      );
+function Icon({ data }: { data: WeatherData }) {
+  if (data?.iconUrl) {
+    return (
+      <Image
+        src={data.iconUrl as string}
+        alt="Weather icon"
+        width={80}
+        height={80}
+        className="w-20 h-20 sm:w-16 sm:h-16"
+      />
+    );
   }
+  return null;
 }
+
 
 export default function HomePage() {
   const [data, setData] = useState<WeatherData | null>(null);
@@ -155,7 +106,7 @@ export default function HomePage() {
 
         <main className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 items-center">
           <div className="col-span-1 flex flex-col items-center justify-center">
-            <Icon type={pickIcon(data ?? {})} />
+            <Icon data={data ?? {}} />
             <div className="mt-3 text-center">
               <div className="text-4xl sm:text-3xl font-bold text-gray-800 dark:text-white">{data?.temperature ?? '--'}°C</div>
               <div className="text-sm text-gray-500">Umidade: {data?.humidity ?? '--'}%</div>
