@@ -71,7 +71,7 @@ function parseMetar(metarStr) {
     ? { alt_inhg: aMatch[1] }
     : null;
 
-  // Ajusta horário local (+3h)
+  // Ajusta horário local (usa timezone America/Sao_Paulo)
   let obsTimeLocal = null;
   const obsTimeRaw = timeMatch ? timeMatch[1] : null;
   if (obsTimeRaw) {
@@ -91,11 +91,10 @@ function parseMetar(metarStr) {
             minute
           )
         );
-        obsDateUtc.setUTCHours(obsDateUtc.getUTCHours() + 3);
-        obsTimeLocal = obsDateUtc.toLocaleTimeString("pt-BR", {
-          hour: "2-digit",
-          minute: "2-digit",
-        });
+        const parts = getDatePartsForTimeZone(obsDateUtc, "America/Sao_Paulo");
+        if (parts && parts.hour && parts.minute) {
+          obsTimeLocal = `${parts.hour}:${parts.minute}`;
+        }
       } catch {
         obsTimeLocal = null;
       }
@@ -176,6 +175,29 @@ function corsHeaders() {
 // ----------------------
 // Mapeamento de ícones de tempo
 // ----------------------
+// Helper: obtém partes da data/hora em um timezone específico usando Intl
+function getDatePartsForTimeZone(date, timeZone) {
+  try {
+    const formatter = new Intl.DateTimeFormat("en-US", {
+      timeZone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+    const partsArr = formatter.formatToParts(date);
+    const parts = {};
+    partsArr.forEach((p) => {
+      if (p.type !== "literal") parts[p.type] = p.value;
+    });
+    return parts; // { year, month, day, hour, minute }
+  } catch {
+    return null;
+  }
+}
+
 function mapWeatherToIcon(parsed) {
   if (!parsed) return "sun";
   const weatherArr = parsed.weather || [];
@@ -286,8 +308,11 @@ export async function OPTIONS() {
 
 export async function GET(request) {
   function getCurrentDate() {
+    const parts = getDatePartsForTimeZone(new Date(), "America/Sao_Paulo");
+    if (parts) {
+      return `${parts.year}${parts.month}${parts.day}`;
+    }
     const now = new Date();
-    now.setHours(now.getHours() + 3);
     return `${now.getFullYear()}${String(now.getMonth() + 1).padStart(
       2,
       "0"
@@ -346,10 +371,12 @@ export async function GET(request) {
     });
 
     const iconNameComputed = mapWeatherToIcon(parsed);
-    // Determina se é dia ou noite no horário local do observador (+3h como elsewhere)
-    const nowLocal = new Date();
-    nowLocal.setHours(nowLocal.getHours() + 3);
-    const hourLocal = nowLocal.getHours();
+    // Determina se é dia ou noite no horário local do observador (America/Sao_Paulo)
+    const nowParts = getDatePartsForTimeZone(new Date(), "America/Sao_Paulo");
+    const hourLocal =
+      nowParts && nowParts.hour
+        ? parseInt(nowParts.hour, 10)
+        : new Date().getHours();
     const isDay = hourLocal >= 6 && hourLocal < 18;
 
     // aplica variante dia/noite para ícone claro
