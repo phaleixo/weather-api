@@ -1,35 +1,42 @@
 {
   "cached": {
-    "metar": "2025112015 - METAR SBRP 201500Z 12008KT 9999 FEW040 30/10 Q1014=",
-    "raw": "2025112015 - METAR SBRP 201500Z 12008KT 9999 FEW040 30/10 Q1014=",
+    "metar": "[{\"icaoId\":\"SBRP\",\"receiptTime\":\"2026-03-25T16:01:18.826Z\",\"obsTime\":1774454400,\"reportTime\":\"2026-03-25T16:00:00.000Z\",\"temp\":29,\"dewp\":19,\"wdir\":330,\"wspd\":8,\"visib\":\"6+\",\"altim\":1015,\"qcField\":0,\"metarType\":\"METAR\",\"rawOb\":\"METAR SBRP 251600Z 33008KT 9999 BKN045 SCT100 29/19 Q1015\",\"lat\":-21.134,\"lon\":-47.774,\"elev\":550,\"name\":\"Ribeirão Preto/Lopes Arpt, SP, BR\",\"cover\":\"SCT\",\"clouds\":[{\"cover\":\"BKN\",\"base\":4500},{\"cover\":\"SCT\",\"base\":10000}],\"fltCat\":\"VFR\"}]",
+    "raw": "[{\"icaoId\":\"SBRP\",\"receiptTime\":\"2026-03-25T16:01:18.826Z\",\"obsTime\":1774454400,\"reportTime\":\"2026-03-25T16:00:00.000Z\",\"temp\":29,\"dewp\":19,\"wdir\":330,\"wspd\":8,\"visib\":\"6+\",\"altim\":1015,\"qcField\":0,\"metarType\":\"METAR\",\"rawOb\":\"METAR SBRP 251600Z 33008KT 9999 BKN045 SCT100 29/19 Q1015\",\"lat\":-21.134,\"lon\":-47.774,\"elev\":550,\"name\":\"Ribeirão Preto/Lopes Arpt, SP, BR\",\"cover\":\"SCT\",\"clouds\":[{\"cover\":\"BKN\",\"base\":4500},{\"cover\":\"SCT\",\"base\":10000}],\"fltCat\":\"VFR\"}]",
     "station": null,
-    "obsTime": "201500Z",
-    "obsTimeLocal": "12:00",
+    "obsTime": "251600Z",
+    "obsTimeLocal": "13:00",
     "wind": {
-      "dir": "120",
+      "dir": "330",
       "speedKt": 8,
       "gustKt": null
     },
-    "visibility": ">=10km",
+    "visibility": "2026 m",
     "clouds": [
       {
-        "type": "FEW",
-        "heightFt": 4000,
+        "type": "BKN",
+        "heightFt": 4500,
+        "modifier": null
+      },
+      {
+        "type": "SCT",
+        "heightFt": 10000,
         "modifier": null
       }
     ],
-    "weather": null,
-    "temperatureC": 30,
-    "dewPointC": 10,
-    "qnh_hpa": 1014,
-    "temperature": 30,
-    "dewPoint": 10,
-    "humidity": 29,
-    "updatedAt": "12:38",
-    "iconName": "sun",
-    "iconPath": "/weather-icons/sun.svg",
-    "iconUrl": "http://localhost:3000/weather-icons/sun.svg"
+    "weather": [
+      "BR"
+    ],
+    "temperatureC": 29,
+    "dewPointC": 19,
+    "qnh_hpa": 1015,
+    "temperature": 29,
+    "dewPoint": 19,
+    "humidity": 55,
+    "updatedAt": "13:35",
+    "iconName": "fog",
+    "iconPath": "/weather-icons/fog.svg",
+    "iconUrl": "http://localhost:3000/weather-icons/fog.svg"
   },
-  "cachedMetar": "2025112015 - METAR SBRP 201500Z 12008KT 9999 FEW040 30/10 Q1014=",
-  "cachedAt": 1763653116059
+  "cachedMetar": "[{\"icaoId\":\"SBRP\",\"receiptTime\":\"2026-03-25T16:01:18.826Z\",\"obsTime\":1774454400,\"reportTime\":\"2026-03-25T16:00:00.000Z\",\"temp\":29,\"dewp\":19,\"wdir\":330,\"wspd\":8,\"visib\":\"6+\",\"altim\":1015,\"qcField\":0,\"metarType\":\"METAR\",\"rawOb\":\"METAR SBRP 251600Z 33008KT 9999 BKN045 SCT100 29/19 Q1015\",\"lat\":-21.134,\"lon\":-47.774,\"elev\":550,\"name\":\"Ribeirão Preto/Lopes Arpt, SP, BR\",\"cover\":\"SCT\",\"clouds\":[{\"cover\":\"BKN\",\"base\":4500},{\"cover\":\"SCT\",\"base\":10000}],\"fltCat\":\"VFR\"}]",
+  "cachedAt": 1774456523410
 }

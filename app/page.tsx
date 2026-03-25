@@ -12,7 +12,11 @@ type WeatherData = {
   obsTimeLocal?: string | null;
   wind?: { dir?: string; speedKt?: number; gustKt?: number } | null;
   visibility?: string | null;
-  clouds?: Array<{ type: string; heightFt: number; modifier: string | null }> | null;
+  clouds?: Array<{
+    type: string;
+    heightFt: number;
+    modifier: string | null;
+  }> | null;
   weather?: string[] | null;
   temperatureC?: number | null;
   dewPointC?: number | null;
@@ -38,7 +42,6 @@ function Icon({ data }: { data: WeatherData }) {
   }
   return null;
 }
-
 
 export default function HomePage() {
   const [data, setData] = useState<WeatherData | null>(null);
@@ -77,21 +80,33 @@ export default function HomePage() {
     return `${wind.dir ?? "-"} ${wind.speedKt ?? "-"} kt (${kmh ?? "-"} km/h)`;
   }
 
-  function formatClouds(clouds?: WeatherData['clouds'], visibility?: string | null) {
+  function formatClouds(
+    clouds?: WeatherData["clouds"],
+    visibility?: string | null,
+  ) {
     if (clouds && clouds.length > 0) {
-      return clouds.map(c => `${c.type}${c.heightFt ? ' ' + (c.heightFt/100) + '00ft' : ''}`).join(', ');
+      return clouds
+        .map(
+          (c) =>
+            `${c.type}${c.heightFt ? " " + c.heightFt / 100 + "00ft" : ""}`,
+        )
+        .join(", ");
     }
-    if (visibility === '>=10km') return 'CAVOK (céu limpo)';
-    return '--';
+    if (visibility === ">=10km") return "CAVOK (céu limpo)";
+    return "--";
   }
 
   return (
-  <div className="min-h-screen bg-linear-to-br from-sky-50 to-white dark:from-gray-900 dark:to-black py-8 sm:py-12 px-4 sm:px-6">
+    <div className="min-h-screen bg-linear-to-br from-sky-50 to-white dark:from-gray-900 dark:to-black py-8 sm:py-12 px-4 sm:px-6">
       <div className="max-w-2xl sm:max-w-3xl mx-auto px-2 sm:px-0">
         <header className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-100">Tempo — Ribeirão Preto (REDMET)</h1>
-            <p className="text-sm text-gray-500">Dados fornecidos pela Redemet — atualizados automaticamente</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-100">
+              Tempo — Ribeirão Preto (REDMET)
+            </h1>
+            <p className="text-sm text-gray-500">
+              Dados fornecidos pela Redemet — atualizados automaticamente
+            </p>
           </div>
           <div className="flex items-center gap-3">
             <button
@@ -99,7 +114,7 @@ export default function HomePage() {
               className="inline-flex items-center gap-2 px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700"
               disabled={loading}
             >
-              {loading ? 'Atualizando...' : 'Atualizar agora'}
+              {loading ? "Atualizando..." : "Atualizar agora"}
             </button>
           </div>
         </header>
@@ -108,8 +123,12 @@ export default function HomePage() {
           <div className="col-span-1 flex flex-col items-center justify-center">
             <Icon data={data ?? {}} />
             <div className="mt-3 text-center">
-              <div className="text-4xl sm:text-3xl font-bold text-gray-800 dark:text-white">{data?.temperature ?? '--'}°C</div>
-              <div className="text-sm text-gray-500">Umidade: {data?.humidity ?? '--'}%</div>
+              <div className="text-4xl sm:text-3xl font-bold text-gray-800 dark:text-white">
+                {data?.temperature ?? "--"}°C
+              </div>
+              <div className="text-sm text-gray-500">
+                Umidade: {data?.humidity ?? "--"}%
+              </div>
             </div>
           </div>
 
@@ -117,83 +136,143 @@ export default function HomePage() {
             <div className="flex justify-between items-start">
               <div>
                 <div className="text-sm text-gray-500">Estação</div>
-                <div className="text-lg font-semibold text-gray-800 dark:text-white">{data?.station ?? 'SBRP'}</div>
-                
+                <div className="text-lg font-semibold text-gray-800 dark:text-white">
+                  {data?.station ?? "SBRP"}
+                </div>
               </div>
-              <div className="text-right text-sm text-gray-400">Atualizado: {data?.updatedAt ?? '--:--'}</div>
+              <div className="text-right text-sm text-gray-400">
+                Atualizado: {data?.updatedAt ?? "--:--"}
+              </div>
             </div>
 
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                 <div className="text-xs text-gray-500">Vento</div>
-                <div className="text-sm font-medium text-gray-800 dark:text-white">{formatWind(data?.wind)}</div>
+                <div className="text-sm font-medium text-gray-800 dark:text-white">
+                  {formatWind(data?.wind)}
+                </div>
               </div>
 
               <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                 <div className="text-xs text-gray-500">Visibilidade</div>
-                <div className="text-sm font-medium text-gray-800 dark:text-white">{data?.visibility ?? '--'}</div>
+                <div className="text-sm font-medium text-gray-800 dark:text-white">
+                  {data?.visibility ?? "--"}
+                </div>
               </div>
 
               <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                 <div className="text-xs text-gray-500">Nuvens</div>
-                <div className="text-sm font-medium text-gray-800 dark:text-white">{formatClouds(data?.clouds, data?.visibility)}</div>
+                <div className="text-sm font-medium text-gray-800 dark:text-white">
+                  {formatClouds(data?.clouds, data?.visibility)}
+                </div>
               </div>
 
               <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                 <div className="text-xs text-gray-500">Pressão</div>
-                <div className="text-sm font-medium text-gray-800 dark:text-white">{data?.qnh_hpa ? data.qnh_hpa + ' hPa' : (data?.alt_inhg ? data.alt_inhg + ' inHg' : '--')}</div>
+                <div className="text-sm font-medium text-gray-800 dark:text-white">
+                  {data?.qnh_hpa
+                    ? data.qnh_hpa + " hPa"
+                    : data?.alt_inhg
+                      ? data.alt_inhg + " inHg"
+                      : "--"}
+                </div>
               </div>
             </div>
 
-            <div className="mt-4 text-xs text-gray-400">METAR: <code className="text-[11px] text-gray-600 dark:text-gray-300">{data?.raw ?? '--'}</code></div>
+            <div className="mt-4 text-xs text-gray-400">
+              METAR:
+              <code className="block mt-1 text-[11px] text-gray-600 dark:text-gray-300 max-w-full break-words whitespace-normal">
+                {data?.raw ?? "--"}
+              </code>
+            </div>
           </div>
         </main>
 
-        <div className="mt-6 text-center text-sm text-gray-500">Dados armazenados em cache no servidor e atualizados quando o METAR muda. Use o botão para forçar atualização.</div>
+        <div className="mt-6 text-center text-sm text-gray-500">
+          Dados armazenados em cache no servidor e atualizados quando o METAR
+          muda. Use o botão para forçar atualização.
+        </div>
         {error && (
-          <div className="mt-4 text-center text-sm text-red-500">Erro: {error}</div>
+          <div className="mt-4 text-center text-sm text-red-500">
+            Erro: {error}
+          </div>
         )}
 
         <footer className="mt-8 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 rounded-lg p-4">
           <div className="max-w-3xl mx-auto text-sm text-gray-600 dark:text-gray-300">
             <div className="flex items-center justify-between">
               <div>
-                API criada por <a href="https://github.com/phaleixo" target="_blank" rel="noopener noreferrer" className="text-blue-600">phaleixo</a> sob licença GPL v3. codigo-fonte disponível no <a href="https://github.com/phaleixo/weather-api" target="_blank" rel="noopener noreferrer" className="text-blue-600">GitHub</a>.
+                API criada por{" "}
+                <a
+                  href="https://github.com/phaleixo"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600"
+                >
+                  phaleixo
+                </a>{" "}
+                sob licença GPL v3. codigo-fonte disponível no{" "}
+                <a
+                  href="https://github.com/phaleixo/weather-api"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600"
+                >
+                  GitHub
+                </a>
+                .
               </div>
               <div className="text-xs text-gray-400">Fonte: REDMET</div>
             </div>
 
             <div className="mt-3">
-              <div className="font-semibold mb-2">Como usar esta API (exemplos rápidos)</div>
+              <div className="font-semibold mb-2">
+                Como usar esta API (exemplos rápidos)
+              </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
-                  <div className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">1) Curl (linha de comando)</div>
-                  <pre className="bg-gray-100 dark:bg-gray-900 p-2 rounded text-[12px] overflow-x-auto"><code>{`curl -s 'https://weather-api-dun-mu.vercel.app/' | jq .`}</code></pre>
+                  <div className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">
+                    1) Curl (linha de comando)
+                  </div>
+                  <pre className="bg-gray-100 dark:bg-gray-900 p-2 rounded text-[12px] overflow-x-auto">
+                    <code>{`curl -s 'https://weather-api-dun-mu.vercel.app/' | jq .`}</code>
+                  </pre>
                 </div>
 
                 <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
-                  <div className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">2) Fetch (JavaScript)</div>
-                  <pre className="bg-gray-100 dark:bg-gray-900 p-2 rounded text-[12px] overflow-x-auto"><code>{`fetch('https://weather-api-dun-mu.vercel.app/')
+                  <div className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">
+                    2) Fetch (JavaScript)
+                  </div>
+                  <pre className="bg-gray-100 dark:bg-gray-900 p-2 rounded text-[12px] overflow-x-auto">
+                    <code>{`fetch('https://weather-api-dun-mu.vercel.app/')
   .then(r => r.json())
   .then(data => console.log(data))
-  .catch(err => console.error(err));`}</code></pre>
+  .catch(err => console.error(err));`}</code>
+                  </pre>
                 </div>
 
                 <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded">
-                  <div className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">3) Incluir no HTML (exemplo mínimo)</div>
-                  <pre className="bg-gray-100 dark:bg-gray-900 p-2 rounded text-[12px] overflow-x-auto"><code>{`<script>
+                  <div className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">
+                    3) Incluir no HTML (exemplo mínimo)
+                  </div>
+                  <pre className="bg-gray-100 dark:bg-gray-900 p-2 rounded text-[12px] overflow-x-auto">
+                    <code>{`<script>
 fetch('https://weather-api-dun-mu.vercel.app/')
   .then(r => r.json())
   .then(data => {
     document.getElementById('temperature').textContent = data.temperature + '°C';
     document.getElementById('humidity').textContent = 'Umidade: ' + data.humidity + '%';
   });
-</script>`}</code></pre>
+</script>`}</code>
+                  </pre>
                 </div>
               </div>
 
-              <div className="text-xs text-gray-400 mt-2">Dica: use <code>?force=true</code> para forçar atualização e <code>jq</code> para formatar JSON no terminal.</div>
+              <div className="text-xs text-gray-400 mt-2">
+                Dica: use <code>?force=true</code> para forçar atualização e{" "}
+                <code>jq</code> para formatar JSON no terminal.
+              </div>
             </div>
           </div>
         </footer>

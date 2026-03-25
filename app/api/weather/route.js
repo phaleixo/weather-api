@@ -307,21 +307,8 @@ export async function OPTIONS() {
 // ----------------------
 
 export async function GET(request) {
-  function getCurrentDate() {
-    const parts = getDatePartsForTimeZone(new Date(), "America/Sao_Paulo");
-    if (parts) {
-      return `${parts.year}${parts.month}${parts.day}`;
-    }
-    const now = new Date();
-    return `${now.getFullYear()}${String(now.getMonth() + 1).padStart(
-      2,
-      "0"
-    )}${String(now.getDate()).padStart(2, "0")}`;
-  }
-
   try {
-    const baseURL = `http://redemet.decea.gov.br/api/consulta_automatica/index.php?local=sbrp&msg=metar&data_ini=${getCurrentDate()}&data_fim=${getCurrentDate()}`;
-
+    const baseURL = `https://aviationweather.gov/api/data/metar?ids=SBRP&format=json`;
     const url = request ? new URL(request.url) : null;
     const forceParam = url ? url.searchParams.get("force") : null;
     const force = forceParam === "true" || forceParam === "1";
