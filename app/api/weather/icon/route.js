@@ -23,12 +23,22 @@ export async function GET(request) {
         {
           status: 400,
           headers: { ...corsHeaders(), "Content-Type": "application/json" },
-        }
+        },
       );
     }
 
     // allowlist simples para evitar path traversal
-    const allowed = ["sun", "moon", "cloud", "rain", "snow", "thunder", "fog"];
+    const allowed = [
+      "sun",
+      "moon",
+      "cloud",
+      "rain",
+      "snow",
+      "thunder",
+      "fog",
+      "sun-fog",
+      "moon-fog",
+    ];
     if (!allowed.includes(name)) {
       return new Response(JSON.stringify({ error: "icon not found" }), {
         status: 404,
@@ -40,7 +50,7 @@ export async function GET(request) {
       process.cwd(),
       "public",
       "weather-icons",
-      `${name}.svg`
+      `${name}.svg`,
     );
     try {
       const data = await fs.readFile(filePath, "utf8");

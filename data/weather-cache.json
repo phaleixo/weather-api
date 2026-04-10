@@ -1,42 +1,31 @@
 {
   "cached": {
-    "metar": "[{\"icaoId\":\"SBRP\",\"receiptTime\":\"2026-03-25T16:01:18.826Z\",\"obsTime\":1774454400,\"reportTime\":\"2026-03-25T16:00:00.000Z\",\"temp\":29,\"dewp\":19,\"wdir\":330,\"wspd\":8,\"visib\":\"6+\",\"altim\":1015,\"qcField\":0,\"metarType\":\"METAR\",\"rawOb\":\"METAR SBRP 251600Z 33008KT 9999 BKN045 SCT100 29/19 Q1015\",\"lat\":-21.134,\"lon\":-47.774,\"elev\":550,\"name\":\"Ribeirão Preto/Lopes Arpt, SP, BR\",\"cover\":\"SCT\",\"clouds\":[{\"cover\":\"BKN\",\"base\":4500},{\"cover\":\"SCT\",\"base\":10000}],\"fltCat\":\"VFR\"}]",
-    "raw": "[{\"icaoId\":\"SBRP\",\"receiptTime\":\"2026-03-25T16:01:18.826Z\",\"obsTime\":1774454400,\"reportTime\":\"2026-03-25T16:00:00.000Z\",\"temp\":29,\"dewp\":19,\"wdir\":330,\"wspd\":8,\"visib\":\"6+\",\"altim\":1015,\"qcField\":0,\"metarType\":\"METAR\",\"rawOb\":\"METAR SBRP 251600Z 33008KT 9999 BKN045 SCT100 29/19 Q1015\",\"lat\":-21.134,\"lon\":-47.774,\"elev\":550,\"name\":\"Ribeirão Preto/Lopes Arpt, SP, BR\",\"cover\":\"SCT\",\"clouds\":[{\"cover\":\"BKN\",\"base\":4500},{\"cover\":\"SCT\",\"base\":10000}],\"fltCat\":\"VFR\"}]",
+    "metar": "[{\"icaoId\":\"SBRP\",\"receiptTime\":\"2026-04-10T09:56:40.928Z\",\"obsTime\":1775815200,\"reportTime\":\"2026-04-10T10:00:00.000Z\",\"temp\":21,\"dewp\":20,\"wdir\":60,\"wspd\":3,\"visib\":\"6+\",\"altim\":1016,\"qcField\":0,\"metarType\":\"METAR\",\"rawOb\":\"METAR SBRP 101000Z 06003KT CAVOK 21/20 Q1016\",\"lat\":-21.134,\"lon\":-47.774,\"elev\":550,\"name\":\"Ribeirão Preto/Lopes Arpt, SP, BR\",\"cover\":\"CAVOK\",\"clouds\":[],\"fltCat\":\"VFR\"}]",
+    "raw": "[{\"icaoId\":\"SBRP\",\"receiptTime\":\"2026-04-10T09:56:40.928Z\",\"obsTime\":1775815200,\"reportTime\":\"2026-04-10T10:00:00.000Z\",\"temp\":21,\"dewp\":20,\"wdir\":60,\"wspd\":3,\"visib\":\"6+\",\"altim\":1016,\"qcField\":0,\"metarType\":\"METAR\",\"rawOb\":\"METAR SBRP 101000Z 06003KT CAVOK 21/20 Q1016\",\"lat\":-21.134,\"lon\":-47.774,\"elev\":550,\"name\":\"Ribeirão Preto/Lopes Arpt, SP, BR\",\"cover\":\"CAVOK\",\"clouds\":[],\"fltCat\":\"VFR\"}]",
     "station": null,
-    "obsTime": "251600Z",
-    "obsTimeLocal": "13:00",
+    "obsTime": "101000Z",
+    "obsTimeLocal": "07:00",
     "wind": {
-      "dir": "330",
-      "speedKt": 8,
+      "dir": "060",
+      "speedKt": 3,
       "gustKt": null
     },
     "visibility": "2026 m",
-    "clouds": [
-      {
-        "type": "BKN",
-        "heightFt": 4500,
-        "modifier": null
-      },
-      {
-        "type": "SCT",
-        "heightFt": 10000,
-        "modifier": null
-      }
-    ],
+    "clouds": [],
     "weather": [
       "BR"
     ],
-    "temperatureC": 29,
-    "dewPointC": 19,
-    "qnh_hpa": 1015,
-    "temperature": 29,
-    "dewPoint": 19,
-    "humidity": 55,
-    "updatedAt": "13:35",
-    "iconName": "fog",
-    "iconPath": "/weather-icons/fog.svg",
-    "iconUrl": "http://localhost:3000/weather-icons/fog.svg"
+    "temperatureC": 21,
+    "dewPointC": 20,
+    "qnh_hpa": 1016,
+    "temperature": 21,
+    "dewPoint": 20,
+    "humidity": 94,
+    "updatedAt": "07:50",
+    "iconName": "sun-fog",
+    "iconPath": "/weather-icons/sun-fog.svg",
+    "iconUrl": "http://localhost:3000/weather-icons/sun-fog.svg"
   },
-  "cachedMetar": "[{\"icaoId\":\"SBRP\",\"receiptTime\":\"2026-03-25T16:01:18.826Z\",\"obsTime\":1774454400,\"reportTime\":\"2026-03-25T16:00:00.000Z\",\"temp\":29,\"dewp\":19,\"wdir\":330,\"wspd\":8,\"visib\":\"6+\",\"altim\":1015,\"qcField\":0,\"metarType\":\"METAR\",\"rawOb\":\"METAR SBRP 251600Z 33008KT 9999 BKN045 SCT100 29/19 Q1015\",\"lat\":-21.134,\"lon\":-47.774,\"elev\":550,\"name\":\"Ribeirão Preto/Lopes Arpt, SP, BR\",\"cover\":\"SCT\",\"clouds\":[{\"cover\":\"BKN\",\"base\":4500},{\"cover\":\"SCT\",\"base\":10000}],\"fltCat\":\"VFR\"}]",
-  "cachedAt": 1774456523410
+  "cachedMetar": "[{\"icaoId\":\"SBRP\",\"receiptTime\":\"2026-04-10T09:56:40.928Z\",\"obsTime\":1775815200,\"reportTime\":\"2026-04-10T10:00:00.000Z\",\"temp\":21,\"dewp\":20,\"wdir\":60,\"wspd\":3,\"visib\":\"6+\",\"altim\":1016,\"qcField\":0,\"metarType\":\"METAR\",\"rawOb\":\"METAR SBRP 101000Z 06003KT CAVOK 21/20 Q1016\",\"lat\":-21.134,\"lon\":-47.774,\"elev\":550,\"name\":\"Ribeirão Preto/Lopes Arpt, SP, BR\",\"cover\":\"CAVOK\",\"clouds\":[],\"fltCat\":\"VFR\"}]",
+  "cachedAt": 1775818226416
 }

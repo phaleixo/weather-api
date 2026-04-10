@@ -32,7 +32,7 @@ function parseMetar(metarStr) {
 
   const weatherMatches = [
     ...metar.matchAll(
-      /(?:\s|^)(?:(-|\+|VC)?(?:(MI|PR|BC|DR|BL|SH|TS|FZ)?(?:DZ|RA|SN|SG|IC|PL|GR|GS|UP|BR|FG|SS|DS|SQ|PO)))/g
+      /(?:\s|^)(?:(-|\+|VC)?(?:(MI|PR|BC|DR|BL|SH|TS|FZ)?(?:DZ|RA|SN|SG|IC|PL|GR|GS|UP|BR|FG|SS|DS|SQ|PO)))/g,
     ),
   ]
     .map((m) => m[0].trim())
@@ -68,8 +68,8 @@ function parseMetar(metarStr) {
   const pressure = qnhMatch
     ? { qnh_hpa: parseInt(qnhMatch[1], 10) }
     : aMatch
-    ? { alt_inhg: aMatch[1] }
-    : null;
+      ? { alt_inhg: aMatch[1] }
+      : null;
 
   // Ajusta horário local (usa timezone America/Sao_Paulo)
   let obsTimeLocal = null;
@@ -88,8 +88,8 @@ function parseMetar(metarStr) {
             nowUtc.getUTCMonth(),
             day,
             hour,
-            minute
-          )
+            minute,
+          ),
         );
         const parts = getDatePartsForTimeZone(obsDateUtc, "America/Sao_Paulo");
         if (parts && parts.hour && parts.minute) {
@@ -155,7 +155,7 @@ async function saveCacheToFile() {
     await fsp.writeFile(
       CACHE_FILE_PATH,
       JSON.stringify(payload, null, 2),
-      "utf8"
+      "utf8",
     );
   } catch (err) {
     console.error("Falha ao salvar cache:", err);
@@ -328,18 +328,51 @@ export async function GET(request) {
           error: "Falha ao buscar dados",
           status: response.status,
         }),
-        { status: 502, headers: corsHeaders() }
+        { status: 502, headers: corsHeaders() },
       );
     }
 
-    const data = await response.text();
-    const metar = data.split("\n")[0] || "";
+    // Suporta resposta JSON (aviationweather) ou texto plano (redmet)
+    let metar = "";
+    const contentType = (
+      response.headers.get("content-type") || ""
+    ).toLowerCase();
+    if (contentType.includes("application/json")) {
+      const json = await response.json();
+      // tenta extrair campos comuns onde o METAR aparece
+      if (
+        json &&
+        json.features &&
+        Array.isArray(json.features) &&
+        json.features.length
+      ) {
+        const props = json.features[0].properties || {};
+        metar =
+          props.raw_text ||
+          props.raw_message ||
+          props.raw ||
+          props.rawMessage ||
+          "";
+      } else if (json && Array.isArray(json.data) && json.data.length) {
+        const d0 = json.data[0] || {};
+        metar = d0.raw_text || d0.raw || d0.rawMessage || d0.raw_message || "";
+      } else if (json && (json.raw_text || json.raw_message || json.raw)) {
+        metar = json.raw_text || json.raw_message || json.raw || "";
+      } else {
+        // fallback: primeiras 1-2 linhas do JSON stringificado
+        const txt = JSON.stringify(json || {});
+        metar = txt.split("\\n")[0] || "";
+      }
+    } else {
+      const data = await response.text();
+      metar = data.split("\n")[0] || "";
+    }
     const parsed = parseMetar(metar);
 
     if (!parsed || !parsed.temperatureC) {
       return new Response(
         JSON.stringify({ error: "METAR inválido ou ausente", metar }),
-        { status: 422, headers: corsHeaders() }
+        { status: 422, headers: corsHeaders() },
       );
     }
 
@@ -372,9 +405,14 @@ export async function GET(request) {
       finalIconName = isDay ? "sun" : "moon";
     }
 
+    // Para neblina, exibir variante dia/noite composta (sol/ lua + névoa)
+    if (iconNameComputed === "fog") {
+      finalIconName = isDay ? "sun-fog" : "moon-fog";
+    }
+
     const { iconName, iconPath, iconUrl } = buildIconPaths(
       finalIconName,
-      request
+      request,
     );
 
     const result = {
@@ -402,7 +440,7 @@ export async function GET(request) {
     console.error("Erro na rota /api/weather:", error);
     return new Response(
       JSON.stringify({ error: "Erro interno", message: String(error) }),
-      { status: 500, headers: corsHeaders() }
+      { status: 500, headers: corsHeaders() },
     );
   }
 }
